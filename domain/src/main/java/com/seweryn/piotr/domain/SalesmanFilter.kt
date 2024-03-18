@@ -9,8 +9,8 @@ internal interface SalesmanFilter {
 internal class SalesmanFilterImpl : SalesmanFilter {
   override fun filter(list: List<Salesman>, area: String): List<Salesman> =
     list.filter { salesman ->
-      salesman.areas.any { area ->
-        area.startsWith(area)
+      salesman.areas.any { salesmanArea ->
+        salesmanArea.startsWith(area)
       }
     }
 

@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.SalesmanListScreen
 import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.SalesmanListViewModelImpl
 import com.seweryn.piotr.codingchallenge.ui.theme._1und1CodingChallengeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

@@ -35,7 +35,8 @@ import com.seweryn.piotr.codingchallenge.ui.theme.Typography
 
 @Composable
 fun SalesmanListScreen(viewModel: SalesmanListViewModel) {
-  val data by viewModel.state.collectAsStateWithLifecycle()
+  val salesmanList by viewModel.salesmanList.collectAsStateWithLifecycle()
+  val searchTermData by viewModel.searchTerm.collectAsStateWithLifecycle()
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -48,15 +49,15 @@ fun SalesmanListScreen(viewModel: SalesmanListViewModel) {
           vertical = 24.dp,
         )
         .fillMaxWidth(),
-      value = data.searchTerm,
-      onValueChange = data.onSearchTermChanged,
+      value = searchTermData.searchTerm,
+      onValueChange = searchTermData.onSearchTermChanged,
       textStyle = Typography.labelLarge,
     )
     LazyColumn(
       modifier = Modifier
         .padding(start = 16.dp),
     ) {
-      items(data.list) { salesman ->
+      items(salesmanList) { salesman ->
         SalesmanListItem(data = salesman)
       }
     }
