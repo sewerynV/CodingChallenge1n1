@@ -15,10 +15,14 @@ internal class GetSalesmanListUseCaseImpl(
   private val salesmanFilter: SalesmanFilter,
 ) : GetSalesmanListUseCase {
   override suspend fun invoke(params: GetSalesmanListUseCase.Params): Result<List<Salesman>> =
-    repository.getSalesmanList().runCatching {
-      salesmanFilter.filter(
-        list = this,
-        area = params.area,
-      )
+    if (params.area.isEmpty()) {
+      Result.success(emptyList())
+    } else {
+      repository.getSalesmanList().runCatching {
+        salesmanFilter.filter(
+          list = this,
+          area = params.area,
+        )
+      }
     }
 }

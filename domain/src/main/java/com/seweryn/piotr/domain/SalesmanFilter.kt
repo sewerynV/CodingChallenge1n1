@@ -11,7 +11,9 @@ internal class SalesmanFilterImpl : SalesmanFilter {
     list.filter { salesman ->
       salesman.areas.any { salesmanArea ->
         salesmanArea.startsWith(area)
+          || area.startsWith(salesmanArea.filter { it.isDigit() })
       }
     }
+
 
 }
