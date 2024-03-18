@@ -2,5 +2,6 @@ package com.seweryn.piotr.codingchallenge.presentation.salesmanlist.model
 
 data class SalesmanListData(
   val searchTerm: String = "",
+  val onSearchTermChanged: (String) -> Unit = {},
   val list: List<SalesmanData> = emptyList(),
 )
