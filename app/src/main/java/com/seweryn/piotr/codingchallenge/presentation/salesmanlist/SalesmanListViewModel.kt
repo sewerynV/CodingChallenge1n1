@@ -8,11 +8,9 @@ import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.model.SearchT
 import com.seweryn.piotr.domain.usecase.GetSalesmanListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface SalesmanListViewModel {
@@ -32,26 +30,29 @@ class SalesmanListViewModelImpl @Inject constructor(
         onSearchTermChanged = ::onSearchTermChanged
       )
     )
-  override val salesmanList =
+  private val searchFlow =
     searchTerm
       .debounce(SEARCH_DELAY)
-      .map { searchTermData ->
+
+  override val salesmanList =
+    MutableStateFlow<List<SalesmanData>>(emptyList())
+
+  init {
+    viewModelScope.launch {
+      searchFlow.collect { searchTermData ->
         getSalesmanListUseCase(
           GetSalesmanListUseCase.Params(area = searchTermData.searchTerm)
         ).getOrNull()?.let { list ->
-          screenMapper(
+          salesmanList.value = screenMapper(
             SalesmanListScreenMapper.Params(
               salesmanList = list,
               onSalesmanClick = ::onSalesmanClicked,
             )
           )
-        } ?: emptyList()
+        }
       }
-      .stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(2000),
-        emptyList()
-      )
+    }
+  }
 
   private fun onSearchTermChanged(text: String) {
     searchTerm.value = SearchTermData(
@@ -61,13 +62,13 @@ class SalesmanListViewModelImpl @Inject constructor(
   }
 
   private fun onSalesmanClicked(name: String) {
-    /*salesmanList.value = salesmanList.value.map { data ->
-      if(data.name == name) {
+    salesmanList.value = salesmanList.value.map { data ->
+      if (data.name == name) {
         data.copy(expanded = !data.expanded)
       } else {
         data
       }
-    }*/
+    }
   }
 
   private companion object {
