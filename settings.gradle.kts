@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "1und1CodingChallenge"
 include(":app")
- 
+include(":domain")
