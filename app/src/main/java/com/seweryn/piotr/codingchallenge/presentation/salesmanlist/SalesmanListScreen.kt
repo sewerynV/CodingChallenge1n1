@@ -19,16 +19,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.seweryn.piotr.codingchallenge.R
 import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.model.SalesmanData
+import com.seweryn.piotr.codingchallenge.ui.theme.Grey200
 import com.seweryn.piotr.codingchallenge.ui.theme.Grey400
 import com.seweryn.piotr.codingchallenge.ui.theme.InitialBackground
 import com.seweryn.piotr.codingchallenge.ui.theme.InitialBorder
@@ -43,16 +46,46 @@ fun SalesmanListScreen(viewModel: SalesmanListViewModel) {
       .fillMaxSize()
       .background(MaterialTheme.colorScheme.background),
   ) {
+
     TextField(
       modifier = Modifier
         .padding(
           horizontal = 16.dp,
           vertical = 24.dp,
         )
+        .border(
+          width = 0.5.dp,
+          color = Grey200,
+        )
+        .shadow(elevation = 5.dp)
         .fillMaxWidth(),
       value = searchTermData.searchTerm,
       onValueChange = searchTermData.onSearchTermChanged,
       textStyle = Typography.labelLarge,
+      leadingIcon = {
+        Icon(
+          painter = painterResource(
+            id = R.drawable.ic_search,
+          ),
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.onBackground,
+        )
+      },
+      trailingIcon = {
+        Icon(
+          painter = painterResource(
+            id = R.drawable.ic_microphone,
+          ),
+          contentDescription = null,
+          tint = MaterialTheme.colorScheme.onBackground,
+        )
+      },
+      colors = TextFieldDefaults.colors(
+        focusedContainerColor = Color.White,
+        unfocusedContainerColor = Color.White,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+      )
     )
     LazyColumn(
       modifier = Modifier
