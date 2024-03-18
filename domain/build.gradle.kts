@@ -5,6 +5,10 @@ plugins {
   id("org.jetbrains.kotlin.android")
 }
 
+tasks.withType<Test> {
+  useJUnitPlatform()
+}
+
 android {
   namespace = "com.seweryn.piotr.domain"
   compileSdk = 34
@@ -38,7 +42,9 @@ dependencies {
   implementation("com.google.android.material:material:1.11.0")
   implementation("com.google.dagger:hilt-android:2.48")
   kapt("com.google.dagger:hilt-android-compiler:2.48")
-  testImplementation("junit:junit:4.13.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.1")
+  testImplementation("io.mockk:mockk:1.13.10")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

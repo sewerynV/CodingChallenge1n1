@@ -18,9 +18,9 @@ internal class GetSalesmanListUseCaseImpl(
     if (params.area.isEmpty()) {
       Result.success(emptyList())
     } else {
-      repository.getSalesmanList().runCatching {
+      runCatching {
         salesmanFilter.filter(
-          list = this,
+          list = repository.getSalesmanList(),
           area = params.area,
         )
       }
