@@ -2,6 +2,7 @@ package com.seweryn.piotr.codingchallenge.presentation.salesmanlist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -68,12 +69,14 @@ fun SalesmanListScreen(viewModel: SalesmanListViewModel) {
 private fun SalesmanListItem(
   data: SalesmanData,
 ) {
-  Row {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
     Box(
       modifier = Modifier
         .size(42.dp)
         .border(1.dp, InitialBorder, CircleShape)
-        .background(InitialBackground),
+        .background(InitialBackground, CircleShape),
       contentAlignment = Alignment.Center,
     ) {
       Text(
@@ -83,12 +86,27 @@ private fun SalesmanListItem(
       )
     }
     Spacer(modifier = Modifier.width(8.dp))
-    Text(
+    Column(
       modifier = Modifier.weight(1f),
-      text = data.name,
-      style = Typography.labelLarge,
-      color = Color.Black,
-    )
+      verticalArrangement = if (data.expanded) {
+        Arrangement.SpaceBetween
+      } else {
+        Arrangement.Center
+      }
+    ) {
+      Text(
+        text = data.name,
+        style = Typography.labelLarge,
+        color = Color.Black,
+      )
+      if (data.expanded) {
+        Text(
+          text = data.workingAreas,
+          style = Typography.labelMedium,
+          color = MaterialTheme.colorScheme.onBackground,
+        )
+      }
+    }
     Icon(
       modifier = Modifier.padding(16.dp),
       painter = painterResource(
