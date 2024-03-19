@@ -149,7 +149,6 @@ class SalesmanListViewModelImplTest : CoroutineTest {
       val job = launch {
         viewModel.salesmanList.collect {
           salesManListObserver(it)
-          println(it)
         }
       }
       // WHEN
