@@ -88,7 +88,7 @@ class SalesmanListViewModelImplTest : CoroutineTest {
   fun `should get salesman list from use case and map it when search term changed`() {
     // GIVEN
     val searchTerm = "abc"
-    testScope.runTest {
+    runTest {
       // WHEN
       viewModel.onSearchTermChanged(searchTerm)
       delay(2000)
@@ -109,7 +109,7 @@ class SalesmanListViewModelImplTest : CoroutineTest {
   fun `should not get salesman list from use case and map it when search term did not change`() {
     // GIVEN
     val searchTerm = "abc"
-    testScope.runTest {
+    runTest {
       // WHEN
       viewModel.onSearchTermChanged(searchTerm)
       advanceTimeBy(2000)
@@ -132,7 +132,7 @@ class SalesmanListViewModelImplTest : CoroutineTest {
   fun `should update salesman list with mapped use case data when search term changed`() {
     // GIVEN
     val searchTerm = "abc"
-    testScope.runTest {
+    runTest {
       // WHEN
       viewModel.onSearchTermChanged(searchTerm)
       delay(2000)
@@ -144,7 +144,7 @@ class SalesmanListViewModelImplTest : CoroutineTest {
 
   @Test
   fun `should update salesman list with mapped use case data only once per second when search term changed`() {
-    testScope.runTest {
+    runTest {
       // GIVEN
       val job = launch {
         viewModel.salesmanList.collect {
@@ -176,5 +176,32 @@ class SalesmanListViewModelImplTest : CoroutineTest {
       }
       job.cancel()
     }
+  }
+
+  @Test
+  fun `should extend salesman data on click`() = runTest {
+    // GIVEN
+    viewModel.onSearchTermChanged("asd")
+    advanceTimeBy(2000)
+
+    // WHEN
+    viewModel.onSalesmanClicked(viewModel.salesmanList.value.first())
+
+    // THEN
+    assert(viewModel.salesmanList.value.first().expanded)
+  }
+
+  @Test
+  fun `should reverse extend salesman data on double click`() = runTest {
+    // GIVEN
+    viewModel.onSearchTermChanged("asd")
+    advanceTimeBy(2000)
+
+    // WHEN
+    viewModel.onSalesmanClicked(viewModel.salesmanList.value.first())
+    viewModel.onSalesmanClicked(viewModel.salesmanList.value.first())
+
+    // THEN
+    assert(viewModel.salesmanList.value.first().expanded.not())
   }
 }
