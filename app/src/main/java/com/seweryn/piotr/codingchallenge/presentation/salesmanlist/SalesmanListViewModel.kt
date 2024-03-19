@@ -6,6 +6,7 @@ import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.mapper.Salesm
 import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.model.SalesmanData
 import com.seweryn.piotr.domain.usecase.GetSalesmanListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
@@ -28,6 +29,8 @@ class SalesmanListViewModelImpl @Inject constructor(
 
   override val searchTerm =
     MutableStateFlow("")
+
+  @OptIn(FlowPreview::class)
   private val searchFlow =
     searchTerm
       .debounce(SEARCH_DELAY)
