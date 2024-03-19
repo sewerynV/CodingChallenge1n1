@@ -50,7 +50,7 @@ import com.seweryn.piotr.codingchallenge.ui.theme.Typography
 @Composable
 fun SalesmanListScreen(viewModel: SalesmanListViewModel) {
   val salesmanList by viewModel.salesmanList.collectAsStateWithLifecycle()
-  val searchTermData by viewModel.searchTerm.collectAsStateWithLifecycle()
+  val searchTerm by viewModel.searchTerm.collectAsStateWithLifecycle()
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -94,8 +94,8 @@ fun SalesmanListScreen(viewModel: SalesmanListViewModel) {
         )
         .shadow(elevation = 5.dp)
         .fillMaxWidth(),
-      value = searchTermData.searchTerm,
-      onValueChange = searchTermData.onSearchTermChanged,
+      value = searchTerm,
+      onValueChange = viewModel::onSearchTermChanged,
       textStyle = Typography.labelLarge,
       leadingIcon = {
         Icon(
@@ -136,7 +136,10 @@ fun SalesmanListScreen(viewModel: SalesmanListViewModel) {
         .padding(start = 16.dp),
     ) {
       items(salesmanList) { salesman ->
-        SalesmanListItem(data = salesman)
+        SalesmanListItem(
+          data = salesman,
+          onClick = viewModel::onSalesmanClicked,
+        )
       }
     }
   }
@@ -145,9 +148,10 @@ fun SalesmanListScreen(viewModel: SalesmanListViewModel) {
 @Composable
 private fun SalesmanListItem(
   data: SalesmanData,
+  onClick: (SalesmanData) -> Unit,
 ) {
   Row(
-    modifier = Modifier.clickable { data.onClicked() },
+    modifier = Modifier.clickable { onClick(data) },
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Box(

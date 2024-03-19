@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.mapper.SalesmanListScreenMapper
 import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.model.SalesmanData
-import com.seweryn.piotr.codingchallenge.presentation.salesmanlist.model.SearchTermData
 import com.seweryn.piotr.domain.usecase.GetSalesmanListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +13,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface SalesmanListViewModel {
-  val searchTerm: StateFlow<SearchTermData>
+  val searchTerm: StateFlow<String>
   val salesmanList: StateFlow<List<SalesmanData>>
+
+  fun onSearchTermChanged(text: String)
+  fun onSalesmanClicked(salesman: SalesmanData)
 }
 
 @HiltViewModel
@@ -25,11 +27,7 @@ class SalesmanListViewModelImpl @Inject constructor(
 ) : ViewModel(), SalesmanListViewModel {
 
   override val searchTerm =
-    MutableStateFlow(
-      SearchTermData(
-        onSearchTermChanged = ::onSearchTermChanged
-      )
-    )
+    MutableStateFlow("")
   private val searchFlow =
     searchTerm
       .debounce(SEARCH_DELAY)
@@ -39,14 +37,13 @@ class SalesmanListViewModelImpl @Inject constructor(
 
   init {
     viewModelScope.launch {
-      searchFlow.collect { searchTermData ->
+      searchFlow.collect { searchTerm ->
         getSalesmanListUseCase(
-          GetSalesmanListUseCase.Params(area = searchTermData.searchTerm)
+          GetSalesmanListUseCase.Params(area = searchTerm)
         ).getOrNull()?.let { list ->
           salesmanList.value = screenMapper(
             SalesmanListScreenMapper.Params(
               salesmanList = list,
-              onSalesmanClick = ::onSalesmanClicked,
             )
           )
         }
@@ -54,16 +51,13 @@ class SalesmanListViewModelImpl @Inject constructor(
     }
   }
 
-  private fun onSearchTermChanged(text: String) {
-    searchTerm.value = SearchTermData(
-      searchTerm = text,
-      onSearchTermChanged = ::onSearchTermChanged
-    )
+  override fun onSearchTermChanged(text: String) {
+    searchTerm.value = text
   }
 
-  private fun onSalesmanClicked(name: String) {
+  override fun onSalesmanClicked(salesman: SalesmanData) {
     salesmanList.value = salesmanList.value.map { data ->
-      if (data.name == name) {
+      if (data.name == salesman.name) {
         data.copy(expanded = !data.expanded)
       } else {
         data
